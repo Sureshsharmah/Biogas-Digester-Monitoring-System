@@ -1,0 +1,731 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Trend Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Center the dashboard */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8fafc; /* Light background for the page */
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .dashboard {
+            width: 90%;
+            max-width: 1400px; /* Increased max-width for larger graph */
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-date {
+            font-size: 16px;
+            color: #64748b;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1e293b; /* Dark gray for title */
+            margin-bottom: 5px;
+        }
+
+        .dashboard-subtitle {
+            font-size: 18px;
+            color: #64748b;
+            margin-top: 0;
+        }
+
+        .timestamp {
+            font-size: 14px;
+            color: #64748b; /* Light gray for timestamp */
+        }
+
+        .chart-container {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            height: 400px; /* Increased height for larger graph */
+            position: relative;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-past {
+            background: black;
+        }
+
+        .legend-current {
+            background: blue;
+        }
+
+        .legend-future {
+            background: green;
+        }
+
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: #f1f5f9; /* Light gray background for cards */
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .metric-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #475569; /* Medium gray for titles */
+            margin-bottom: 10px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b; /* Dark gray for values */
+            margin: 0;
+        }
+
+        .metric-change {
+            font-size: 14px;
+            color: #64748b; /* Light gray for changes */
+            margin: 0;
+        }
+
+        .trend-analysis {
+            background: #f1f5f9; /* Light gray background for analysis section */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .trend-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1e293b; /* Dark gray for title */
+            margin-bottom: 20px;
+        }
+
+        .trend-section {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 4px solid #cbd5e1;
+        }
+
+        .trend-label {
+            font-size: 18px;
+            font-weight: 500;
+            color: #475569; /* Medium gray for labels */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .indicator-past {
+            background: #3b82f6; /* Blue for past */
+        }
+
+        .indicator-prediction {
+            background: #10b981; /* Green for future */
+        }
+
+        .trend-description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #475569; /* Medium gray for descriptions */
+            margin: 0;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #64748b; /* Light gray for footer */
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .status-poor {
+            color: #b91c1c;
+            font-weight: 500;
+        }
+
+        .status-moderate {
+            color: #d97706;
+            font-weight: 500;
+        }
+
+        .status-optimal {
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .positive {
+            color: #059669;
+            font-weight: 500;
+        }
+
+        .negative {
+            color: #b91c1c;
+            font-weight: 500;
+        }
+
+        .stable {
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .description-container {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .description-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .description-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #475569;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .insight-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .insight-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .insight-title::before {
+            content: "";
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .past-insight::before {
+            background-color: #3b82f6;
+        }
+
+        .current-insight::before {
+            background-color: #10b981;
+        }
+
+        .future-insight::before {
+            background-color: #f59e0b;
+        }
+
+        .key-highlights {
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.75);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            margin-top: 20px;
+        }
+
+        .highlight-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="dashboard-date">Date: {{ graph_date }}</div>
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">{{ graph_name }} Performance Analysis</h1>
+            <p class="dashboard-subtitle">Comprehensive trend visualization and forecast</p>
+            <span class="timestamp" id="timestamp"></span>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+        <div class="chart-legend">
+            <div class="legend-item"><span class="legend-color legend-past"></span> Historical Data</div>
+            <div class="legend-item"><span class="legend-color legend-current"></span> Current Value</div>
+            <div class="legend-item"><span class="legend-color legend-future"></span> Projected Trend</div>
+        </div>
+        
+        <div class="metrics-container">
+            <div class="metric-card">
+                <h3 class="metric-title">Current Value</h3>
+                <p class="metric-value" id="current-value">--</p>
+                <p class="metric-change" id="current-status">--</p>
+            </div>
+            
+            <div class="metric-card">
+                <h3 class="metric-title">Change vs. Start</h3>
+                <p class="metric-value" id="change-value">--</p>
+                <p class="metric-change" id="change-percent">--</p>
+            </div>
+            
+            <div class="metric-card">
+                <h3 class="metric-title">Projected Value</h3>
+                <p class="metric-value" id="projected-value">--</p>
+                <p class="metric-change" id="projected-status">--</p>
+            </div>
+            
+            <div class="metric-card">
+                <h3 class="metric-title">Trend Analysis</h3>
+                <p class="metric-value" id="trend-direction">--</p>
+                <p class="metric-change" id="trend-intensity">--</p>
+            </div>
+        </div>
+        
+        <!-- Enhanced Description Container -->
+        <div class="description-container">
+            <h2 class="description-title">Comprehensive Trend Insights</h2>
+            <div id="detailed-description" class="description-text"></div>
+        </div>
+        
+        <div class="footer">
+            Data Analysis Report • Generated by Business Intelligence Tools • Last updated: {{ graph_date }}
+        </div>
+    </div>
+    
+    <script>
+        // Set timestamp to the date passed from the backend
+        const graphDate = new Date("{{ graph_date }}");
+        const ctx = document.getElementById('myChart').getContext('2d');
+        
+        const past_value = {{ past_15_days | tojson }};
+        const current_value = {{ current_value | tojson }};
+        const future_value = {{ future_7_days | tojson }};
+        
+        const past_dates = past_value.map((_, i) => new Date("{{ graph_date }}").setDate(new Date("{{ graph_date }}").getDate() - (past_value.length - i)));
+        const current_date = [new Date("{{ graph_date }}").getTime()];
+        const future_dates = future_value.map((_, i) => new Date("{{ graph_date }}").setDate(new Date("{{ graph_date }}").getDate() + (i + 1)));
+        
+        const labels = [...past_dates, ...current_date, ...future_dates].map(date => new Date(date).toISOString().split('T')[0]);
+        
+        const data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Historical Data',
+                    data: [...past_value, past_value[past_value.length - 1], null],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#3b82f6',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                },
+                {
+                    label: 'Current Value',
+                    data: [...Array(past_value.length).fill(null), past_value[past_value.length - 1], ...current_value],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10b981',
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    pointStyle: 'rectRot'
+                },
+                {
+                    label: 'Projected Trend',
+                    data: [...Array(past_value.length + current_value.length).fill(null), ...future_value],
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: '#f59e0b',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    borderDash: [5, 5],
+                    pointStyle: 'triangle'
+                }
+            ]
+        };
+        
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#1e293b',
+                        bodyColor: '#475569',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 10,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y.toFixed(1);
+                            }
+                        }
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date',
+                            font: {
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: true,
+                            color: 'rgba(226, 232, 240, 0.5)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Value',
+                            font: {
+                                weight: 'bold'
+                            }
+                        },
+                        beginAtZero: false,
+                        suggestedMin: Math.min(...past_value, ...current_value, ...future_value) - 5,
+                        suggestedMax: Math.max(...past_value, ...current_value, ...future_value) + 5,
+                        grid: {
+                            display: true,
+                            color: 'rgba(226, 232, 240, 0.5)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toFixed(1);
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        new Chart(ctx, config);
+
+        // Function to calculate trend
+        const calculateTrend = (values) => {
+            if (values.length < 2) return 'neutral';
+            const first = values[0];
+            const last = values[values.length - 1];
+            if (last > first) return 'increase';
+            if (last < first) return 'decrease';
+            return 'neutral';
+        };
+
+        // Function to find volatility
+        const calculateVolatility = (values) => {
+            if (values.length < 2) return 0;
+            let changes = [];
+            for (let i = 1; i < values.length; i++) {
+                changes.push(Math.abs(values[i] - values[i-1]));
+            }
+            return (changes.reduce((sum, val) => sum + val, 0) / changes.length).toFixed(2);
+        };
+
+        // Function to find peak and trough
+        const findPeakAndTrough = (values) => {
+            if (values.length < 1) return { peak: 0, peakIndex: 0, trough: 0, troughIndex: 0 };
+            let peak = values[0];
+            let trough = values[0];
+            let peakIndex = 0;
+            let troughIndex = 0;
+            
+            for (let i = 0; i < values.length; i++) {
+                if (values[i] > peak) {
+                    peak = values[i];
+                    peakIndex = i;
+                }
+                if (values[i] < trough) {
+                    trough = values[i];
+                    troughIndex = i;
+                }
+            }
+            
+            return { peak, peakIndex, trough, troughIndex };
+        };
+
+        // Function to find significant patterns
+        const findPatterns = (values) => {
+            if (values.length < 3) return 'insufficient data';
+            
+            // Check for consistent trend
+            let increases = 0;
+            let decreases = 0;
+            
+            for (let i = 1; i < values.length; i++) {
+                if (values[i] > values[i-1]) increases++;
+                else if (values[i] < values[i-1]) decreases++;
+            }
+            
+            const consistencyThreshold = values.length * 0.7;
+            
+            if (increases > consistencyThreshold) return 'consistent increase';
+            if (decreases > consistencyThreshold) return 'consistent decrease';
+            
+            // Check for reversal
+            const firstHalf = values.slice(0, Math.floor(values.length/2));
+            const secondHalf = values.slice(Math.floor(values.length/2));
+            
+            const firstTrend = calculateTrend(firstHalf);
+            const secondTrend = calculateTrend(secondHalf);
+            
+            if (firstTrend === 'increase' && secondTrend === 'decrease') return 'reversal (peak in middle)';
+            if (firstTrend === 'decrease' && secondTrend === 'increase') return 'reversal (trough in middle)';
+            
+            // Check for plateau
+            let plateauCount = 0;
+            const tolerance = 1.0; // Tolerance for what we consider "flat"
+            
+            for (let i = 1; i < values.length; i++) {
+                if (Math.abs(values[i] - values[i-1]) <= tolerance) plateauCount++;
+            }
+            
+            if (plateauCount > consistencyThreshold) return 'flat line (stable values)';
+            
+            // Fallback
+            return 'fluctuating (mixed pattern)';
+        };
+        
+        // Function to describe momentum
+        const describeMomentum = (values) => {
+            if (values.length < 4) return 'insufficient data';
+            
+            const recentValues = values.slice(-4);
+            let changes = [];
+            
+            for (let i = 1; i < recentValues.length; i++) {
+                changes.push(recentValues[i] - recentValues[i-1]);
+            }
+            
+            const increasingMomentum = changes.every((change, index, array) => 
+                index === 0 || change > array[index-1]);
+                
+            const decreasingMomentum = changes.every((change, index, array) => 
+                index === 0 || change < array[index-1]);
+                
+            if (increasingMomentum && calculateTrend(recentValues) === 'increase') return 'accelerating upward';
+            if (increasingMomentum && calculateTrend(recentValues) === 'decrease') return 'decelerating downward';
+            if (decreasingMomentum && calculateTrend(recentValues) === 'increase') return 'decelerating upward';
+            if (decreasingMomentum && calculateTrend(recentValues) === 'decrease') return 'accelerating downward';
+            
+            return 'steady';
+        };
+        
+        // Calculate percent of target achievement
+        const calculateTargetAchievement = (current, target) => {
+            return ((current / target) * 100).toFixed(1);
+        };
+
+        // Update dashboard metrics
+        const updateMetrics = () => {
+            const lastValue = past_value[past_value.length - 1];
+            const firstValue = past_value[0];
+            const predictedValue = future_value[future_value.length - 1];
+            const change = lastValue - firstValue;
+            const changePercent = (change / firstValue * 100);
+
+            // Calculate trends
+            const pastTrend = calculateTrend(past_value);
+            const futureTrend = calculateTrend(future_value);
+            
+            // Calculate volatility
+            const pastVolatility = calculateVolatility(past_value);
+            const futureVolatility = calculateVolatility(future_value);
+            
+            // Find peak and trough
+            const { peak, peakIndex, trough, troughIndex } = findPeakAndTrough(past_value);
+            const maxChange = peak - trough;
+            const maxChangePercent = (maxChange / trough * 100).toFixed(1);
+            
+            // Find patterns
+            const pastPattern = findPatterns(past_value);
+            const futurePattern = findPatterns(future_value);
+            
+            // Momentum
+            const pastMomentum = describeMomentum(past_value);
+            const futureMomentum = describeMomentum(future_value);
+            
+            // Set a hypothetical target value
+            const targetValue = 85.0;
+            const targetAchievement = calculateTargetAchievement(lastValue, targetValue);
+            const futureTargetAchievement = calculateTargetAchievement(predictedValue, targetValue);
+
+            function getStatus(value) {
+                if (value < 30) return 'Poor';
+                if (value < 70) return 'Moderate';
+                return 'Optimal';
+            }
+
+            const getStatusClass = (status) => {
+                if (status === 'Poor') return 'status-poor';
+                if (status === 'Moderate') return 'status-moderate';
+                return 'status-optimal';
+            };
+
+            const getTrendClass = (value) => {
+                if (value > 0) return 'positive';
+                if (value < 0) return 'negative';
+                return 'stable';
+            };
+
+            const lastStatus = getStatus(lastValue);
+            const predictedStatus = getStatus(predictedValue);
+            
+            // Update metrics cards
+            document.getElementById('current-value').textContent = lastValue.toFixed(1);
+            document.getElementById('current-status').innerHTML = `<span class="${getStatusClass(lastStatus)}">${lastStatus}</span>`;
+
+            document.getElementById('change-value').textContent = change.toFixed(1);
+            document.getElementById('change-percent').innerHTML = `<span class="${getTrendClass(change)}">${changePercent > 0 ? '+' : ''}${changePercent.toFixed(1)}%</span> vs. start`;
+
+            document.getElementById('projected-value').textContent = predictedValue.toFixed(1);
+            document.getElementById('projected-status').innerHTML = `<span class="${getStatusClass(predictedStatus)}">${predictedStatus}</span>`;
+
+            document.getElementById('trend-direction').textContent = futureTrend === 'increase' ? 'Increasing' : futureTrend === 'decrease' ? 'Decreasing' : 'Neutral';
+            document.getElementById('trend-intensity').innerHTML = `<span class="${getTrendClass(change)}">
+                ${Math.abs(change).toFixed(1)} units
+            </span>`;
+
+            // Generate past dates in readable format
+            const peakDate = new Date(past_dates[peakIndex]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            const troughDate = new Date(past_dates[troughIndex]).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+            // Enhanced Detailed Description
+            const detailedDescription = `
+                <div class="insight-section">
+                    <h3 class="insight-title past-insight">Historical Performance Analysis</h3>
+                    <p>The data shows a <strong>${pastTrend}</strong> trend over the past 15 days, starting at <strong>${firstValue.toFixed(1)}</strong> and reaching <strong>${lastValue.toFixed(1)}</strong> today. This represents a <span class="${getTrendClass(change)}">${Math.abs(changePercent).toFixed(1)}% ${change > 0 ? 'gain' : 'decline'}</span>.</p>
+                    
+                    <p>Key observations from historical data:</p>
+                    <ul>
+                        <li>Peak value of <strong>${peak.toFixed(1)}</strong> was recorded on <strong>${peakDate}</strong></li>
+                        <li>Lowest value of <strong>${trough.toFixed(1)}</strong> was recorded on <strong>${troughDate}</strong></li>
+                        <li>Maximum fluctuation of <strong>${maxChange.toFixed(1)}</strong> units (${maxChangePercent}%)</li>
+                        <li>Average day-to-day volatility: <strong>${pastVolatility}</strong> units</li>
+                    </ul>
+                </div>
+                
+                <div class="insight-section">
+                    <h3 class="insight-title current-insight">Current Status Assessment</h3>
+                    <p>The current value of <strong>${lastValue.toFixed(1)}</strong> is rated as <span class="${getStatusClass(lastStatus)}"><strong>${lastStatus}</strong></span> based on our performance criteria.</p>
+                </div>
+                
+                <div class="insight-section">
+                    <h3 class="insight-title future-insight">Future Projection Analysis</h3>
+                    <p>The forecast predicts a <strong>${futureTrend}</strong> trend over the next 7 days, with values expected to move from <strong>${lastValue.toFixed(1)}</strong> to <strong>${predictedValue.toFixed(1)}</strong>, representing a <span class="${getTrendClass(predictedValue - lastValue)}">${Math.abs(((predictedValue - lastValue) / lastValue * 100)).toFixed(1)}% ${predictedValue > lastValue ? 'increase' : 'decrease'}</span>.</p>
+                </div>
+                
+                <div class="key-highlights">
+                    <h4 class="highlight-title">Key Insights Summary</h4>
+                    <ol>
+                        <li>The most significant change observed was a <strong>${maxChange.toFixed(1)}</strong> unit (${maxChangePercent}%) ${trough < peak ? 'increase' : 'decrease'} between ${troughDate} and ${peakDate}.</li>
+                        <li>Current performance is <strong>${changePercent > 0 ? 'positive' : 'negative'}</strong> compared to the start of the measurement period.</li>
+                        <li>The forecast indicates ${futureTrend === 'increase' ? 'continued growth' : futureTrend === 'decrease' ? 'continued decline' : 'stabilization'} with ${futurePattern}.</li>
+                        <li>Based on all factors, the overall outlook is <strong>${(futureTrend === 'increase' && lastStatus !== 'Poor') || (futureTrend === 'increase' && predictedStatus === 'Optimal') ? '<span class="positive">positive</span>' : (futureTrend === 'decrease' && lastStatus !== 'Optimal') || (futureTrend === 'decrease' && predictedStatus === 'Poor') ? '<span class="negative">concerning</span>' : '<span class="stable">stable</span>'}</strong>.</li>
+                    </ol>
+                </div>
+            `;
+            document.getElementById('detailed-description').innerHTML = detailedDescription;
+        };
+
+        // Initialize dashboard
+        updateMetrics();
+    </script>
+</body>
+</html>

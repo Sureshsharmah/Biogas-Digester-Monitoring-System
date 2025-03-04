@@ -1,0 +1,914 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digester Health Monitor - Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f6fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Updated Sidebar Styles */
+        .sidebar {
+            width: 270px;
+            background: linear-gradient(145deg, #1c3b63, #295b87);
+            color: white;
+            padding-top: 30px;
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease-in-out;
+            border-radius: 0 15px 15px 0;
+        }
+
+        .sidebar .brand {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            border-radius: 10px;
+            margin: 5px 20px;
+            background: linear-gradient(145deg, #214b78, #306595);
+            transition: all 0.3s ease-in-out;
+            box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .sidebar a:hover {
+            background: linear-gradient(145deg, #2b5d91, #4075b3);
+            transform: translateY(-3px);
+            box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar a .icon {
+            font-size: 22px;
+            margin-right: 12px;
+        }
+
+        .logout-container {
+    margin-top: auto;
+    padding: 20px;
+    margin-bottom: 20px; /* Added this to move it upwards */
+}
+
+.logout-btn {
+    display: block;
+    padding: 15px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #d63031, #ff7675);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease-in-out;
+}
+
+.logout-btn:hover {
+    background: linear-gradient(145deg, #ff7675, #e74c3c);
+    transform: translateY(-3px);
+    box-shadow: 7px 7px 14px rgba(0, 0, 0, 0.5);
+}
+
+
+        .container {
+            margin-left: 300px;
+            padding: 20px;
+        }
+
+        /* Tab Styles */
+        .section-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .section-tab {
+            padding: 12px 24px;
+            background-color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-tab.active {
+            background-color: #4285f4;
+            color: white;
+            box-shadow: 0 4px 8px rgba(66, 133, 244, 0.3);
+        }
+
+        .section-tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Parameter Section Styles */
+        .parameters-section {
+            display: none;
+        }
+
+        .parameters-section.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .parameter-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .parameter-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .parameter-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00c853;
+            margin-bottom: 15px;
+        }
+
+        .parameter-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .parameter-label {
+            color: #666;
+        }
+
+        .parameter-value {
+            font-weight: 500;
+            left: 0; /* Positions the value to the left */
+
+        }
+
+        .optimal-range {
+            background-color: #e3f2fd;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .health-score {
+            font-size: 48px;
+            color: #00c853;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .status-label {
+            color: #00c853;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .date-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .date-input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .analyze-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin-left: 0;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+
+        /* Add these new styles for the modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: #000;
+        }
+
+        #plotContainer {
+            height: 400px;
+            margin: 20px 0;
+        }
+
+        .plot-explanation {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Updated Sidebar -->
+    <div class="sidebar">
+        <div class="brand">Digester Monitor</div>
+        <div class="menu">
+            <a href="{{ url_for('main') }}">
+                <span class="icon">&#127968;</span> Home
+            </a>
+            <a href="{{ url_for('dashboard') }}">
+                <span class="icon">&#128202;</span> Dashboard
+            </a>
+            </a>
+        <a href="{{ url_for('dataset') }}">
+            <span class="icon">&#128202;</span> Automatic
+        </a>
+        </div>
+        <div class="logout-container">
+            <a href="/" class="logout-btn">
+                <span class="icon">&#x1F6AA;</span> Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Digester Health Dashboard</h1>
+
+        <div class="date-section">
+            <form id="dateForm">
+                <input type="date" id="date" name="date" class="date-input" required>
+                <button type="submit" class="analyze-btn">Analyze</button>
+            </form>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <div id="results" style="display: none;">
+            <div class="overall-status">
+                <h2>Overall Health Status</h2>
+                <div id="overallHealthScore" class="health-score"></div>
+                <div id="overallStatus" class="status-label"></div>
+                <div id="analysisPeriod">Analysis Period: <span></span></div>
+            </div>
+
+            <div class="section-tabs">
+                <button class="section-tab active" data-section="digester_feed">Digester Feed</button>
+                <button class="section-tab" data-section="digester_recycle">Digester Recycle</button>
+                <button class="section-tab" data-section="digester_disposal">Digester Disposal</button>
+                <button class="section-tab" data-section="biogas_clean">Biogas Clean</button>
+            </div>
+
+            <div id="digester_feed" class="parameters-section active"></div>
+            <div id="digester_recycle" class="parameters-section"></div>
+            <div id="digester_disposal" class="parameters-section"></div>
+            <div id="biogas_clean" class="parameters-section"></div>
+        </div>
+    </div>
+
+    <div id="plotModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="plotTitle"></h2>
+            <div id="plotContainer"></div>
+            <div id="plotExplanation" class="plot-explanation"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script>
+        // Parameter sections configuration
+        const sections = {
+            digester_feed: {
+                parameters: [
+                    { name: 'TS', range: { min: 8, max: 10 } },
+                    { name: 'VS', range: { min: 4, max: 6 } },
+                    { name: 'MC', range: { min: 89, max: 93 } },
+                    { name: 'PH', range: { min: 6.8, max: 7.2 } },
+                    { name: 'VFA', range: { min: 1500, max: 2000 } },
+                    { name: 'ALK', range: { min: 4000, max: 5500 } },
+                    { name: 'VA', range: { min: 0.2, max: 0.4 } },
+                    { name: 'EC', range: { min: 10, max: 13 } },
+                    { name: 'Temp', range: { min: 28, max: 32 } },
+                    { name: 'COD', range: { min: 2000, max: 3000 } }
+                ]
+            },
+            digester_recycle: {
+                parameters: [
+                    { name: 'TS', range: { min: 8, max: 10 } },
+                    { name: 'VS', range: { min: 4, max: 6 } },
+                    { name: 'MC', range: { min: 89, max: 93 } },
+                    { name: 'PH', range: { min: 6.8, max: 7.2 } },
+                    { name: 'VFA', range: { min: 1500, max: 2000 } },
+                    { name: 'ALK', range: { min: 4000, max: 5500 } },
+                    { name: 'VA', range: { min: 0.2, max: 0.4 } },
+                    { name: 'EC', range: { min: 10, max: 13 } },
+                    { name: 'Temp', range: { min: 28, max: 32 } },
+                    { name: 'TOC', range: { min: 2, max: 3 } }
+                ]
+            },
+            digester_disposal: {
+                parameters: [
+                    { name: 'TS', range: { min: 8, max: 10 } },
+                    { name: 'VS', range: { min: 4, max: 6 } },
+                    { name: 'MC', range: { min: 89, max: 93 } },
+                    { name: 'PH', range: { min: 6.8, max: 7.2 } },
+                    { name: 'VFA', range: { min: 1500, max: 2000 } },
+                    { name: 'ALK', range: { min: 4000, max: 5500 } },
+                    { name: 'VA', range: { min: 0.2, max: 0.4 } },
+                    { name: 'EC', range: { min: 10, max: 13 } },
+                    { name: 'Temp', range: { min: 28, max: 32 } },
+                    { name: 'TOC', range: { min: 2, max: 3 } }
+                ]
+            },
+            biogas_clean: {
+                parameters: [
+                    { name: 'Methane%', range: { min: 60, max: 65 } },
+                    { name: 'H2S(ppm)', range: { min: 0, max: 100 } },
+                    { name: 'Clean Biogas Methane%', range: { min: 60, max: 65 } },
+                    { name: 'Clean Biogas H2S(ppm)', range: { min: 0, max: 50 } },
+                    { name: 'Dosing pH', range: { min: 6.5, max: 7.5 } },
+                    { name: 'Scrubber pH', range: { min: 6.5, max: 7.5 } }
+                ]
+            }
+        };
+
+        // Tab switching functionality
+        $('.section-tab').click(function() {
+            $('.section-tab').removeClass('active');
+            $(this).addClass('active');
+            
+            const sectionId = $(this).data('section');
+            $('.parameters-section').removeClass('active');
+            $(`#${sectionId}`).addClass('active');
+        });
+
+        // Function to get trend messages based on health score
+        function getTrendMessages(healthScore, value, range) {
+            // Past 20 Days Trend
+            let pastTrend = "";
+            if (healthScore >= 90) {
+                pastTrend = "Consistently optimal";
+            } else if (healthScore >= 70) {
+                pastTrend = "Showing improvement";
+            } else if (healthScore >= 50) {
+                pastTrend = "Showing fluctuations";
+            } else {
+                pastTrend = "Needs attention";
+            }
+
+            // Predicted Future Trend
+            let futureTrend = "";
+            if (value < range.min) {
+                futureTrend = "May require increase";
+            } else if (value > range.max) {
+                futureTrend = "May require decrease";
+            } else if (healthScore >= 70) {
+                futureTrend = "Expected to remain stable";
+            } else {
+                futureTrend = "May require monitoring";
+            }
+
+            // Immediate Action
+            let action = "";
+            if (healthScore >= 90) {
+                action = "Maintain current parameters";
+            } else if (healthScore >= 70) {
+                action = "Monitor regularly";
+            } else if (healthScore >= 50) {
+                action = "Schedule maintenance check";
+            } else {
+                action = "Critical situation, take immediate action!";
+            }
+
+            return { pastTrend, futureTrend, action };
+        }
+
+        // Function to create parameter cards
+        function createParameterCard(param, value) {
+            const healthScore = calculateParameterHealth(value, param.range);
+            const healthStatus = getHealthStatus(healthScore);
+            const statusColor = getStatusColor(healthScore);
+            const trendMessages = getTrendMessages(healthScore, value, param.range);
+
+            return `
+<div class="parameter-card">
+    <div class="parameter-name" style="color: ${statusColor}">${param.name}</div>
+
+    <div class="parameter-detail" style="display: flex; justify-content: space-between; align-items: center;">
+    <span class="parameter-label" style="width: 50%;">Current Value:</span>
+        <span class="parameter-value" style="text-align: right; width: 50%;">${value.toFixed(2)}</span>
+    
+    </div>
+
+    <div class="parameter-detail" style="display: flex; justify-content: space-between; align-items: center;">
+         <span class="parameter-label" style="width: 50%;">Health Score:</span>
+        <span class="parameter-value" style="text-align: right; width: 50%; color: ${statusColor}">${healthScore.toFixed(1)}%</span>
+       
+    </div>
+
+    <div class="parameter-detail" style="display: flex; justify-content: space-between; align-items: center;">
+          <span class="parameter-label" style="width: 50%;">Status:</span>
+        <span class="parameter-value" style="text-align: right; width: 50%; color: ${statusColor}">${healthStatus}</span>
+      
+    </div>
+
+    <div class="parameter-detail" style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="width: 50%;">Optimal Range:</span>
+        <span style="text-align: right; width: 50%;">${param.range.min} - ${param.range.max}</span>
+      
+    </div>
+
+    <div class="parameter-detail" style="display: flex; justify-content: space-between; align-items: center;">
+         <span class="parameter-label" style="width: 50%;">Past 20 Days Trend:</span>
+        <span class="parameter-value" style="text-align: right; width: 50%;">${trendMessages.pastTrend}</span>
+       
+    </div>
+
+    <div class="parameter-detail" style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="parameter-label" style="width: 50%;">Predicted Future Trend:</span>
+        <span class="parameter-value" style="text-align: right; width: 50%;">${trendMessages.futureTrend}</span>
+    
+    </div>
+
+    <div class="parameter-detail" style="display: flex; justify-content: space-between; align-items: center;">
+        <span class="parameter-label" style="width: 50%;">Immediate Action:</span>
+        <span class="parameter-value" style="text-align: right; width: 50%; color: ${statusColor}">${trendMessages.action}</span>
+    </div>
+
+    <button class="graph-btn" onclick="redirectToGraph('${param.name}')">View Graph</button>
+</div>
+               `
+        }
+
+
+
+
+
+
+
+
+//         function redirectToGraph(featureName) {
+//     const encodedFeatureName = encodeURIComponent(featureName); // Encode to handle spaces or special characters
+//     window.location.href = `/graph?name=${encodedFeatureName}`;
+// }
+
+
+
+function redirectToGraph(featureName) {
+    const encodedFeatureName = encodeURIComponent(featureName); // Encode feature name
+    const analysisPeriod = document.getElementById('date').value; // Get date from input
+    const encodedDate = encodeURIComponent(analysisPeriod); // Encode date
+    const activeSectionId = document.querySelector('.parameters-section.active')?.id;
+
+    // Redirect to the /graph route with both name and date as query parameters
+    window.location.href = `/graph?name=${encodedFeatureName}&date=${encodedDate}&main_feature=${activeSectionId}`;
+}
+
+
+// const activeSectionId = document.querySelector('.parameters-section.active')?.id;
+// console.log(activeSectionId); // This will log the currently active section's ID
+
+
+
+
+
+
+
+
+
+
+
+        // Calculate health score for a parameter
+      function calculateParameterHealth(value, range) {
+          if (value >= range.min && value <= range.max) {
+              return 100;
+          }
+          const midPoint = (range.max + range.min) / 2;
+          const maxDeviation = range.max - range.min;
+          const actualDeviation = Math.abs(value - midPoint);
+          return Math.max(0, 100 - (actualDeviation / maxDeviation) * 100);
+      }
+      
+      // Calculate overall health score
+      function calculateOverallHealth(values) {
+          let totalScore = 0;
+          let validParameters = 0;
+      
+          Object.keys(sections).forEach(section => {
+              sections[section].parameters.forEach((param, index) => {
+                  const value = values[validParameters];
+                  if (value !== undefined) {
+                      const score = calculateParameterHealth(value, param.range);
+                      totalScore += score;
+                      validParameters++;
+                  }
+              });
+          });
+      
+          return validParameters > 0 ? totalScore / validParameters : 0;
+      }
+      
+      // Get color based on health score
+      function getStatusColor(score) {
+          if (score >= 90) return '#00c853'; // Optimal - Green
+          if (score >= 70) return '#ffd600'; // Good - Yellow
+          if (score >= 50) return '#ff9100'; // Fair - Orange
+          return '#ff1744'; // Poor - Red
+      }
+      
+      // Handle form submission
+      $('#dateForm').on('submit', function(event) {
+          event.preventDefault();
+          let selectedDate = $('#date').val();
+      
+          $.ajax({
+              type: 'POST',
+              url: '{{ url_for("dashboard") }}',
+              data: { date: selectedDate },
+              success: function(response) {
+                  if (response.prediction) {
+                      $('#errorMessage').hide();
+                      $('#results').show();
+                      
+                      const predictionData = response.prediction[0];
+                      
+                      // Calculate overall health score
+                      const healthScore = calculateOverallHealth(predictionData);
+                      const statusColor = getStatusColor(healthScore);
+                      
+                      $('#overallHealthScore').text(healthScore.toFixed(1) + '%')
+                          .css('color', statusColor);
+                      
+                      // Set status based on health score
+                      const status = getHealthStatus(healthScore);
+                      $('#overallStatus').text(status)
+                          .css('color', statusColor);
+      
+                      // Clear previous parameters
+                      Object.keys(sections).forEach(sectionId => {
+                          $(`#${sectionId}`).empty();
+                      });
+      
+                      // Populate parameters for each section
+                      let dataIndex = 0;
+                      Object.keys(sections).forEach(sectionId => {
+                          const section = sections[sectionId];
+                          const sectionDiv = $(`#${sectionId}`);
+      
+                          section.parameters.forEach(param => {
+                              const value = predictionData[dataIndex];
+                              if (value !== undefined) {
+                                  sectionDiv.append(createParameterCard(param, value));
+                              }
+                              dataIndex++;
+                          });
+                      });
+      
+                      // Update analysis period
+                      const date = new Date(selectedDate);
+                      const endDate = new Date(date);
+                      const startDate = new Date(date);
+                      startDate.setDate(startDate.getDate() - 20);
+                      $('#analysisPeriod span').text(
+                          `${startDate.toLocaleDateString()} to ${endDate.toLocaleDateString()}`
+                      );
+      
+                  } else if (response.error) {
+                      $('#errorMessage').show().text(response.error);
+                      $('#results').hide();
+                  }
+              },
+              error: function() {
+                  $('#errorMessage').show().text('An error occurred while processing the request.');
+                  $('#results').hide();
+              }
+          });
+      });
+      
+      // Helper function to determine health status
+      function getHealthStatus(score) {
+          if (score >= 90) return 'Optimal';
+          if (score >= 70) return 'Good';
+          if (score >= 50) return 'Fair';
+          return 'Poor';
+      }
+
+      // Function to generate historical data
+// Function to generate sample data points
+    function generateDataPoints(days, currentValue, optimalRange) {
+        const data = [];
+        const today = new Date();
+        const midPoint = (optimalRange.max + optimalRange.min) / 2;
+        const volatility = (optimalRange.max - optimalRange.min) * 0.15;
+
+        for (let i = days; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            
+            // Create more realistic variations that tend towards the optimal range
+            let noise = (Math.random() - 0.5) * volatility;
+            let pullToOptimal = (midPoint - currentValue) * 0.1;
+            let value = currentValue + noise + pullToOptimal;
+            
+            // Ensure values don't deviate too extremely
+            value = Math.max(optimalRange.min * 0.7, Math.min(optimalRange.max * 1.3, value));
+            
+            data.push({
+                x: date.toISOString().split('T')[0],
+                y: parseFloat(value.toFixed(2))
+            });
+            
+            // Update current value for next iteration
+            currentValue = value;
+        }
+        return data;
+    }
+
+    // Function to show parameter trends with improved visualization
+    function showParameterTrends(paramName, currentValue, optimalRange) {
+        const modal = document.getElementById('plotModal');
+        const plotTitle = document.getElementById('plotTitle');
+        const plotContainer = document.getElementById('plotContainer');
+        const plotExplanation = document.getElementById('plotExplanation');
+        
+        // Clear previous content
+        plotContainer.innerHTML = '<canvas id="trendChart"></canvas>';
+        modal.style.display = 'block';
+        
+        // Generate historical data
+        const historicalData = generateDataPoints(20, currentValue, optimalRange);
+        
+        // Calculate statistics
+        const values = historicalData.map(d => d.y);
+        const stats = {
+            min: Math.min(...values).toFixed(2),
+            max: Math.max(...values).toFixed(2),
+            avg: (values.reduce((a, b) => a + b) / values.length).toFixed(2)
+        };
+
+        // Create new chart
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        
+        // Create gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(54, 162, 235, 0.2)');
+        gradient.addColorStop(1, 'rgba(54, 162, 235, 0)');
+
+        // Destroy existing chart if it exists
+        if (window.currentChart) {
+            window.currentChart.destroy();
+        }
+
+        // Configure and create new chart
+        window.currentChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [
+                    {
+                        label: paramName,
+                        data: historicalData,
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: 'rgb(54, 162, 235)'
+                    },
+                    {
+                        label: 'Optimal Range Max',
+                        data: historicalData.map(d => ({
+                            x: d.x,
+                            y: optimalRange.max
+                        })),
+                        borderColor: 'rgba(255, 99, 132, 0.5)',
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Optimal Range Min',
+                        data: historicalData.map(d => ({
+                            x: d.x,
+                            y: optimalRange.min
+                        })),
+                        borderColor: 'rgba(255, 99, 132, 0.5)',
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${paramName} Trend Analysis`,
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: {
+                            size: 13
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 10,
+                        displayColors: true
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'day',
+                            displayFormats: {
+                                day: 'MMM d'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Value'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Update explanation section with analysis
+        const trend = values[values.length - 1] > values[0] ? 'increasing' : 'decreasing';
+        const withinRange = currentValue >= optimalRange.min && currentValue <= optimalRange.max;
+        
+        plotExplanation.innerHTML = `
+            <h3>Trend Analysis</h3>
+            <p><strong>${paramName}</strong> analysis over the past 20 days:</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+                    <div style="font-weight: bold; color: #2196f3;">Current Value</div>
+                    <div>${currentValue.toFixed(2)}</div>
+                </div>
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+                    <div style="font-weight: bold; color: #2196f3;">20-Day Average</div>
+                    <div>${stats.avg}</div>
+                </div>
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px;">
+                    <div style="font-weight: bold; color: #2196f3;">Range</div>
+                    <div>${stats.min} - ${stats.max}</div>
+                </div>
+            </div>
+            <div style="margin-top: 1rem;">
+                <h4>Key Observations:</h4>
+                <ul>
+                    <li>The parameter shows a ${trend} trend over the period</li>
+                    <li>Optimal range: ${optimalRange.min} - ${optimalRange.max}</li>
+                    <li>Current value is ${currentValue > stats.avg ? 'above' : 'below'} the 20-day average</li>
+                    <li>${withinRange ? 'Current value is within optimal range' : 'Current value is outside optimal range'}</li>
+                </ul>
+            </div>
+        `;
+    }
+
+    // Event listeners for modal
+    document.querySelector('.close-modal').onclick = function() {
+        document.getElementById('plotModal').style.display = 'none';
+        if (window.currentChart) {
+            window.currentChart.destroy();
+        }
+    };
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('plotModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+            if (window.currentChart) {
+                window.currentChart.destroy();
+            }
+        }
+    };
+
+    function viewGraph(feature) {
+    window.location.href = `/graph?name=${encodeURIComponent(feature)}`;
+    };
+
+</script>
+</body>
+</html>

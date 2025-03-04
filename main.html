@@ -1,0 +1,385 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biogas Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(145deg, #2d3a4b, #3a4f63);
+            color: white;
+            padding-top: 30px;
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            transition: width 0.3s ease;
+        }
+
+        .sidebar .brand {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: #1d2a36;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar a .icon {
+            font-size: 22px;
+            margin-right: 10px;
+        }
+
+        /* Logout Button */
+        .logout-btn {
+            margin-top: auto;
+            background-color: #e74c3c;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 20px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            width: 100%; /* Make the button stretch across */
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .logout-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn .icon {
+            font-size: 20px;
+        }
+
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            padding: 20px;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .biogas-info {
+            background-color: #fff;
+            padding: 30px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .biogas-info img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="brand">Digester Monitor</div>
+        <div class="menu">
+            <a href="/main">
+                <span class="icon">&#127968;</span> Home
+            </a>
+            <a href="/dashboard">
+                <span class="icon">&#128202;</span> Dashboard
+            </a>
+        </div>
+        <!-- Logout button at the bottom of sidebar -->
+        <!-- <a href="/" class="logout-btn">
+            <span class="icon">&#x1F6AA;</span> Logout
+        </a>
+    </div>
+
+    <div class="main-content">
+        <div class="biogas-info">
+            <h2>Biogas Overview</h2>
+            <p>Biogas is a renewable energy source produced by the breakdown of organic materials such as agricultural waste, food scraps, and animal manure in an anaerobic environment. It primarily consists of methane, which can be used for heating, electricity generation, and as a fuel source for vehicles.</p>
+            <p>Biogas production helps reduce waste, provides an alternative to fossil fuels, and contributes to environmental sustainability by reducing greenhouse gas emissions.</p>
+            <img src="{{ url_for('static', filename='images/image.png') }}" alt="Biogas Production">
+        </div>
+    </div>
+</body>
+
+</html> -->
+ -->
+
+
+
+
+ <!DOCTYPE html>
+ <html lang="en">
+ 
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Biogas Page</title>
+     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+     <style>
+         * {
+             box-sizing: border-box;
+             margin: 0;
+             padding: 0;
+         }
+ 
+         body {
+             font-family: 'Montserrat', sans-serif;
+             background: #eef1f7;
+             display: flex;
+         }
+ 
+         /* Sidebar */
+         .sidebar {
+             width: 270px;
+             background: linear-gradient(145deg, #1c3b63, #295b87);
+             color: white;
+             padding-top: 30px;
+             position: fixed;
+             height: 100%;
+             top: 0;
+             left: 0;
+             display: flex;
+             flex-direction: column;
+             box-shadow: 5px 0 15px rgba(0, 0, 0, 0.4);
+             transition: all 0.3s ease-in-out;
+             border-radius: 0 15px 15px 0;
+         }
+ 
+         .brand {
+             text-align: center;
+             font-size: 24px;
+             font-weight: bold;
+             text-transform: uppercase;
+             margin-bottom: 30px;
+             letter-spacing: 1px;
+         }
+ 
+         .menu {
+             display: flex;
+             flex-direction: column;
+             gap: 15px;
+         }
+ 
+         .sidebar a {
+             display: flex;
+             align-items: center;
+             padding: 15px;
+             text-decoration: none;
+             color: white;
+             font-size: 18px;
+             border-radius: 10px;
+             margin: 5px 20px;
+             background: linear-gradient(145deg, #214b78, #306595);
+             transition: all 0.3s ease-in-out;
+             box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
+         }
+ 
+         .sidebar a:hover {
+             background: linear-gradient(145deg, #2b5d91, #4075b3);
+             transform: translateY(-3px);
+             box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.5);
+         }
+ 
+         .sidebar a .icon {
+             font-size: 22px;
+             margin-right: 12px;
+         }
+ 
+         /* Logout Button (Fixed at the Bottom) */
+         .logout-container {
+             margin-top: auto;
+             padding: 20px;
+         }
+ 
+         .logout-btn {
+             display: block;
+             padding: 15px;
+             border-radius: 12px;
+             background: linear-gradient(145deg, #d63031, #ff7675);
+             color: white;
+             font-size: 18px;
+             font-weight: bold;
+             text-align: center;
+             text-decoration: none;
+             box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.4);
+             transition: all 0.3s ease-in-out;
+         }
+ 
+         .logout-btn:hover {
+             background: linear-gradient(145deg, #ff7675, #e74c3c);
+             transform: translateY(-3px);
+             box-shadow: 7px 7px 14px rgba(0, 0, 0, 0.5);
+         }
+ 
+         /* Main Content */
+         .main-content {
+             margin-left: 300px;
+             padding: 30px;
+             width: 100%;
+             min-height: 100vh;
+             background: #eef1f7;
+         }
+ 
+         h2 {
+             color: #2c3e50;
+             margin-bottom: 15px;
+         }
+ 
+         .biogas-info {
+             background: #ffffff;
+             padding: 30px;
+             border-radius: 12px;
+             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
+             transition: 0.3s;
+         }
+ 
+         .biogas-info:hover {
+             box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.2);
+         }
+ 
+         .biogas-info p {
+             font-size: 16px;
+             line-height: 1.6;
+             color: #555;
+         }
+ 
+         .biogas-info img {
+             width: 100%;
+             height: auto;
+             border-radius: 10px;
+             margin-top: 15px;
+         }
+ 
+         /* Responsive Design */
+         @media (max-width: 768px) {
+             .main-content {
+                 margin-left: 0;
+             }
+ 
+             .sidebar {
+                 display: none;
+             }
+         }
+     </style>
+ </head>
+ 
+ <body>
+     <div class="sidebar">
+         <div class="brand">Digester Monitor</div>
+         <div class="menu">
+             <a href="/main">
+                 <span class="icon">&#127968;</span> Home
+             </a>
+             <a href="/dashboard">
+                 <span class="icon">&#128202;</span> Dashboard
+             </a>
+            </a>
+            <a href="/dataset">
+                <span class="icon">&#128190;</span> Automatic
+            </a>
+         </div>
+         <div class="logout-container">
+             <a href="/" class="logout-btn">
+                 <span class="icon">&#x1F6AA;</span> Logout
+             </a>
+         </div>
+     </div>
+ 
+     <div class="main-content">
+         <div class="biogas-info">
+             <h2>Biogas Overview</h2>
+             <p>Biogas is a renewable energy source produced by the breakdown of organic materials such as agricultural waste, food scraps, and animal manure in an anaerobic environment. It primarily consists of methane, which can be used for heating, electricity generation, and as a fuel source for vehicles.</p>
+             <p>Biogas production helps reduce waste, provides an alternative to fossil fuels, and contributes to environmental sustainability by reducing greenhouse gas emissions.</p>
+             <img src="{{ url_for('static', filename='images/image.png') }}" alt="Biogas Production">
+         </div>
+     </div>
+ </body>
+ 
+ </html>
+ 
+ 
+
+ 
+ 
+ 
+
+ 
+
+ 
+ 
+ 
+ 

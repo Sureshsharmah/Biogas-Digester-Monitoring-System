@@ -1,0 +1,149 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Calendar</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body>
+    <h1>Predict Biogas Parameters</h1>
+    <form id="date-form">
+        <label for="date">Select a date:</label>
+        <input type="text" id="date" name="date" placeholder="YYYY-MM-DD" required>
+        <button type="submit">Predict</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        flatpickr("#date", { dateFormat: "Y-m-d" });
+
+        $("#date-form").on("submit", function(e) {
+            e.preventDefault();
+            const date = $("#date").val();
+            $.post("/predict", { date: date }, function(data) {
+                if (data.error) {
+                    $("#result").html(`<p style="color: red;">${data.error}</p>`);
+                } else {
+                    $("#result").html(`<p>Predicted Values: ${data.prediction}</p>`);
+                }
+            });
+        });
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Graphs</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        #charts-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+        }
+        .chart-card {
+            width: 45%;
+        }
+        .chart-card canvas {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Biogas Parameter Prediction</h1>
+    <form id="date-form">
+        <label for="date">Select a date:</label>
+        <input type="text" id="date" name="date" placeholder="YYYY-MM-DD" required>
+        <button type="submit">Predict</button>
+    </form>
+    <div id="charts-container"></div>
+
+    <script>
+        flatpickr("#date", { dateFormat: "Y-m-d" });
+
+        $("#date-form").on("submit", function(e) {
+            e.preventDefault();
+            const date = $("#date").val();
+            $.post("/predict", { date: date }, function(data) {
+                if (data.error) {
+                    alert(data.error);
+                    $("#charts-container").empty();
+                } else {
+                    const predictions = data.prediction[0];
+                    const labels = [
+                        "Digester_Disposal_TS", "Digester_Disposal_VS", "Digester_Disposal_MC",
+                        "Digester_Disposal_pH", "Digester_Disposal_VFA", "Digester_Disposal_ALK",
+                        "Digester_Disposal_VA", "Digester_Disposal_EC", "Digester_Disposal_Temp",
+                        "Digester_Disposal_TOC"
+                    ];
+
+                    $("#charts-container").empty(); // Clear previous charts
+
+                    predictions.forEach((value, index) => {
+                        // Create a chart card for each prediction
+                        const chartId = `chart-${index}`;
+                        $("#charts-container").append(`
+                            <div class="chart-card">
+                                <h3>${labels[index]}</h3>
+                                <canvas id="${chartId}" width="400" height="200"></canvas>
+                            </div>
+                        `);
+
+                        // Render the line chart
+                        const ctx = document.getElementById(chartId).getContext('2d');
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ["Prediction"], // Single label for the graph
+                                datasets: [{
+                                    label: `${labels[index]}`,
+                                    data: [value],
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    fill: true,
+                                    tension: 0.1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: { display: true }
+                                },
+                                scales: {
+                                    x: {
+                                        title: { display: true, text: 'Feature' }
+                                    },
+                                    y: {
+                                        title: { display: true, text: 'Value' },
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> -->
+
+
+

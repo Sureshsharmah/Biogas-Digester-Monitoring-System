@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background-color: #333;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            border-bottom: 1px solid #444;
+            text-align: center;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .container {
+            margin-left: 220px;
+            margin-top: 100px;
+            width: 100%;
+        }
+        .result-box {
+            padding: 30px;
+            font-size: 20px;
+            text-align: center;
+            border: 3px solid #ccc;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+        .btn {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <a href="{{ url_for('main') }}">Home</a>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="result-box">
+                <h2>Prediction Result</h2>
+                <p>The prediction for the selected date is:</p>
+                <p><strong>{{ prediction }}</strong></p>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8 text-center">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+            <a href="{{ url_for('main') }}" class="btn btn-secondary">Go to Home</a>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
